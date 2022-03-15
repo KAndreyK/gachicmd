@@ -15,6 +15,10 @@ gachidict = []
 with open('gachicmd' + os.sep + 'gachidict.txt') as f:
     gachidict = f.read().splitlines()
 
+heroes = []
+with open('gachicmd' + os.sep + 'gachiheroes.txt') as f:
+    heroes = f.read().splitlines()
+
 soundsdir = os.sep + 'gachicmd' + os.sep + 'sounds'
 
 class GachiShell(cmd.Cmd):
@@ -27,25 +31,46 @@ class GachiShell(cmd.Cmd):
         'fisting is 300$'
         self.username = 'dungeon master'
         path = os.getcwd() + soundsdir
-        mp3 = pyglet.media.load(os.path.join(path, "fisting-is-300-.mp3"))
+        mp3 = pyglet.media.load(os.path.join(path, "fisting-is-300-bucks.mp3"))
         mp3.play()
         print("Fisting is 300$")
 
-    def do_bosses(self, arg):
+    def do_choose_hero(self, arg):
+        """become gachi hero
+        
+        options: -l, --list: show list of hero names"""
+        if arg == '--list' or arg == '-l':
+            print(heroes)
+            return
+        if arg.isspace() or arg == '':
+            print("You don't print hero name, slave")
+            return
+        for hero in heroes:
+            if arg in hero:
+                self.username = hero
+                print(f"Nice to fuck you, {self.username}")
+                return
+        print("Hero don`t found, slave")
+
+    def do_mansingym(self, arg):
         'Who is in gym'
-        print("Billy Herrington,", "Van Darkholme,", "Ricardo Milos,", "Mark Wolff,", "Danny Lee")
+        l = list(range(0, random.randint(0, len(heroes) - 1)))
+        random.shuffle(l)
+        for i in l:
+            print(heroes[i])
 
     def do_do_anal(self, arg):
         'AAAAAAAAAA'
         self.username = 'dungeon master'
         path = os.getcwd() + soundsdir
-        mp3 = pyglet.media.load(os.path.join(path, "rip-ears.mp3"))
+        mp3 = pyglet.media.load(os.path.join(path, "AAAAAAA.mp3"))
         mp3.play()
         print("AAAAAAAAAAAA")
 
     def do_slave(self, arg):
         'for slaves'
-        webbrowser.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+        print('Gotcha! You`ve been gachirickrolled :)')
+        webbrowser.open('https://youtu.be/_rW9a9Z4YbI')
 
     def do_im_master(self, arg):
         'become dungeon master'
@@ -63,12 +88,12 @@ class GachiShell(cmd.Cmd):
 
         Options:
         [words]: turn sounds, which has this word(s) in name.
-        --list: show list available names of sounds.
+        -l, --list: show list available names of sounds.
         """
         files = os.listdir(os.getcwd() + soundsdir)
         files = [f for f in files if f[-3:] == 'mp3']
         good = 0
-        if arg == '--list':
+        if arg == '--list' or arg == '-l':
             print(files)
             return
         for f in files:
@@ -93,7 +118,10 @@ class GachiShell(cmd.Cmd):
 
     def do_phrase(self, arg):
         'random gachi phrase'
-        print(gachidict[random.randint(0, len(gachidict) - 1)][3:-3])
+        if sys.platform.startswith('linux'):
+            print(gachidict[random.randint(0, len(gachidict) - 1)])
+        elif sys.platform.startswith('win'):
+            print(gachidict[random.randint(0, len(gachidict) - 1)][3:-3])
 
     def do_fuckyou(self, arg):
         'Go out from gym'
