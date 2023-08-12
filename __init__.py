@@ -34,8 +34,7 @@ class GachiShell(cmd.Cmd):
     intro = (
         f"Nice to see you in the gym, {username}.   Type help or ? to list commands."
     )
-    current_date_time = dt.datetime.now()
-    current_time = current_date_time.time()
+    current_time = dt.datetime.now().time()
     prompt = "\n[" + str(current_time)[:8] + "]--[boss of this gym: " + getpass.getuser() + "]--[gym: " + os.getcwd() + "]\n300$ "
     file = None
 
@@ -133,7 +132,15 @@ class GachiShell(cmd.Cmd):
 
     def default(self, arg):
         "Execute basic cmd commmand"
-        os.system(arg)
+        if arg[:2] == 'cd':
+            dir = arg.split()[1]
+            path = os.getcwd() + os.sep + dir
+            if os.path.exists(path):
+                os.chdir(path)
+            else:
+                print(f"Path {path} doesn't exist")
+        else:
+            os.system(arg)
     
     def do_makemecum(self, arg):
         "Execute make"
@@ -147,6 +154,12 @@ class GachiShell(cmd.Cmd):
         if self.file:
             self.file.close()
             self.file = None
+
+    def postcmd(self, stop, line):
+        """Hook method executed just after a command dispatch is finished."""
+        current_time = dt.datetime.now().time()
+        self.prompt = "\n[" + str(current_time)[:8] + "]--[boss of this gym: " + getpass.getuser() + "]--[gym: " + os.getcwd() + "]\n300$ "
+        return stop
 
 
 def main():
